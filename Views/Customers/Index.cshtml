@@ -1,0 +1,215 @@
+﻿@model IEnumerable<CoffeeLoyaltyApp.Models.Customer>
+
+@{
+    ViewData["Title"] = "قائمة العملاء المسجلين";
+}
+
+<style>
+    body {
+        background-color: #121212;
+        font-family: 'Amiri', serif, sans-serif;
+        color: #E2DFD2;
+        direction: rtl;
+        text-align: right;
+    }
+
+    .main-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #1e281f; /* زيتي غامق وفخم */
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(226, 223, 210, 0.15);
+    }
+
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(226, 223, 210, 0.15);
+        padding-bottom: 15px;
+    }
+
+    .btn-custom-add {
+        background-color: #2b382d;
+        color: #E2DFD2;
+        border: 1px solid rgba(226, 223, 210, 0.3);
+        padding: 8px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .btn-custom-add:hover {
+            background-color: #38483a;
+            color: #ffffff;
+        }
+
+    /* تنسيق شريط البحث */
+    .search-box {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+    }
+
+        .search-box input {
+            padding: 8px 12px;
+            width: 280px;
+            background-color: #121212;
+            border: 1px solid rgba(226, 223, 210, 0.3);
+            border-radius: 8px;
+            color: #E2DFD2;
+        }
+
+        .search-box button {
+            background-color: #38483a;
+            color: #E2DFD2;
+            border: 1px solid rgba(226, 223, 210, 0.3);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .search-box a {
+            background-color: #4a5d4c;
+            color: #E2DFD2;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+    .table-custom {
+        width: 100%;
+        color: #E2DFD2;
+        border-collapse: collapse;
+    }
+
+        .table-custom th, .table-custom td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid rgba(226, 223, 210, 0.1);
+        }
+
+        .table-custom th {
+            font-weight: bold;
+            color: #d1cbb8;
+        }
+
+    /* أزرار التحكم بالأختام والأكواب */
+    .btn-counter {
+        background-color: #2b382d;
+        color: #E2DFD2;
+        border: 1px solid rgba(226, 223, 210, 0.3);
+        padding: 2px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+        .btn-counter:hover {
+            background-color: #4a5d4c;
+        }
+
+    .btn-action-details {
+        background-color: #4a5d4c;
+        color: #ffffff;
+        padding: 5px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+
+    .btn-action-delete {
+        background-color: #8b3a3a;
+        color: #ffffff;
+        padding: 5px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+        .btn-action-details:hover, .btn-action-delete:hover {
+            opacity: 0.85;
+            color: #fff;
+        }
+</style>
+
+<div class="main-container">
+    <div class="header-section">
+        <h2>قائمة العملاء المسجلين - سَدَم ☕</h2>
+        <a asp-action="Create" class="btn-custom-add">+ إضافة عميل جديد</a>
+    </div>
+
+    <!-- شريط البحث برقم الـ ID أو رقم الجوال -->
+    <form asp-action="Index" method="get" class="search-box">
+        <input type="text" name="searchQuery" placeholder="ابحث برقم الـ ID أو رقم الجوال..." />
+        <button type="submit">بحث</button>
+        <a asp-action="Index">إلغاء البحث</a>
+    </form>
+
+    <table class="table-custom">
+        <thead>
+            <tr>
+                <th>معرف العميل (ID)</th>
+                <th>اسم العميل</th>
+                <th>رقم الجوال</th>
+                <th style="text-align: center;">عدد الأختام</th>
+                <th style="text-align: center;">الأكواب المجانية</th>
+                <th style="text-align: center;">الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>#@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.PhoneNumber</td>
+
+                    <!-- تحكم الأختام (زيادة ونقصان) -->
+                    <td style="text-align: center;">
+                        <form asp-action="UpdateStamps" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="change" value="-1" />
+                            <button type="submit" class="btn-counter">-</button>
+                        </form>
+                        <span style="margin: 0 10px; font-weight: bold;">@item.StampCount</span>
+                        <form asp-action="UpdateStamps" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="change" value="1" />
+                            <button type="submit" class="btn-counter">+</button>
+                        </form>
+                    </td>
+
+                    <!-- تحكم الأكواب المجانية (زيادة ونقصان) -->
+                    <td style="text-align: center;">
+                        <form asp-action="UpdateFreeCups" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="change" value="-1" />
+                            <button type="submit" class="btn-counter">-</button>
+                        </form>
+                        <span style="margin: 0 10px; font-weight: bold;">@item.FreeCupsCount</span>
+                        <form asp-action="UpdateFreeCups" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="change" value="1" />
+                            <button type="submit" class="btn-counter">+</button>
+                        </form>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn-action-details">عرض البطاقة</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action-delete">حذف</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

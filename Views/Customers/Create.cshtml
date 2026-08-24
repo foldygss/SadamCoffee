@@ -1,0 +1,132 @@
+﻿@model CoffeeLoyaltyApp.Models.Customer
+
+@{
+    ViewData["Title"] = "تسجيل عميل جديد";
+}
+
+<style>
+    body {
+        background-color: #121212;
+        font-family: 'Amiri', serif, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        direction: rtl;
+    }
+
+    .register-container {
+        background-color: #1e281f; /* زيتي غامق جداً وفخم */
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        width: 420px;
+        color: #E2DFD2;
+        border: 1px solid rgba(226, 223, 210, 0.15);
+    }
+
+    .brand-header {
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(226, 223, 210, 0.15);
+        padding-bottom: 15px;
+        text-align: right;
+    }
+
+    .brand-title-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .brand-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: #E2DFD2;
+    }
+
+    .brand-logo {
+        width: 45px;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .brand-subtitle {
+        font-size: 13px;
+        color: #E2DFD2;
+        opacity: 0.8;
+        margin-top: 5px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 15px;
+        color: #E2DFD2;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        background-color: #161e17; /* لون خانات الإدخال زيتي داكن ومتناسق */
+        border: 1px solid rgba(226, 223, 210, 0.25);
+        border-radius: 10px;
+        color: #E2DFD2;
+        font-size: 15px;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+        .form-control:focus {
+            border-color: #E2DFD2;
+        }
+
+    .btn-submit {
+        width: 100%;
+        padding: 12px;
+        background-color: #E2DFD2;
+        color: #1e281f;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.3s;
+        margin-top: 10px;
+    }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+</style>
+
+<div class="register-container">
+
+    <div class="brand-header">
+        <div class="brand-title-row">
+            <div class="brand-title">سَـــدَم</div>
+            <img src="~/images/sadam-logo.png" alt="Sadam Logo" class="brand-logo" />
+        </div>
+        <div class="brand-subtitle">سجل بياناتك للحصول على بطاقة الولاء وأكوابك المجانية</div>
+    </div>
+
+    <form asp-action="Create">
+        <input type="hidden" asp-for="StampCount" value="0" />
+
+        <div class="form-group">
+            <label asp-for="Name" class="form-label">الاسم الكامل</label>
+            <input asp-for="Name" class="form-control" placeholder="اكتب اسمك هنا..." />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PhoneNumber" class="form-label">رقم الجوال</label>
+            <input asp-for="PhoneNumber" class="form-control" placeholder="05xxxxxxxx" />
+        </div>
+
+        <button type="submit" class="btn-submit">تسجيل وحفظ البطاقة</button>
+    </form>
+</div>

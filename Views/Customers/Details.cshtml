@@ -1,0 +1,207 @@
+﻿@model CoffeeLoyaltyApp.Models.Customer
+
+@{
+    ViewData["Title"] = "بطاقة ولاء - سَدَم";
+
+    // حساب الأختام في الدورة الحالية (من 0 إلى 5)
+    int currentStampsInCycle = Model.StampCount % 5;
+    if (Model.StampCount > 0 && currentStampsInCycle == 0 && Model.StampCount >= 5)
+    {
+        currentStampsInCycle = 5;
+    }
+
+    // المتبقي على الكوب المجاني القادم
+    int remainingForGift = 5 - currentStampsInCycle;
+    if (remainingForGift == 5 && Model.StampCount == 0)
+    {
+        remainingForGift = 5;
+    }
+}
+
+<style>
+    body {
+        background-color: #121212;
+        font-family: 'Amiri', serif, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        direction: rtl;
+    }
+
+    /* البطاقة المستطيلة الفخمة */
+    .loyalty-card {
+        background-color: #2b382d;
+        width: 480px;
+        padding: 25px;
+        border-radius: 22px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+        color: #E2DFD2;
+        text-align: right;
+        border: 1px solid rgba(226, 223, 210, 0.3);
+    }
+
+    /* المنطقة العلوية (النص والفوق والأكواب) وتحمل الخلفية الزيتية الفخمة بالكامل */
+    .top-hero-section {
+        background-image: url('/images/cardbg.jpg');
+        background-size: cover;
+        background-position: center;
+        padding: 20px;
+        border-radius: 16px;
+        border: 1px solid rgba(226, 223, 210, 0.35);
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .brand-title {
+        font-size: 30px;
+        font-weight: bold;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* حاوية الأكواب الكبيرة والواضحة */
+    .cups-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .cup-item {
+        width: 65px;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0.25; /* الكوب الفارغ باهت */
+        transition: all 0.3s ease;
+    }
+
+        /* الكوب النشط (المأخوذ) يظهر بوضوح تام 100% وبدون شفافية */
+        .cup-item.active {
+            opacity: 1;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+        }
+
+    .cup-img {
+        width: 62px; /* أكواب بحجم كبير وواضح جداً */
+        height: auto;
+        object-fit: contain;
+    }
+
+    .info-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        padding: 0 5px;
+    }
+
+    .customer-name {
+        font-weight: bold;
+        font-size: 22px;
+        color: #fff;
+    }
+
+    .qr-section {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 14px;
+        text-align: center;
+        color: #000;
+        margin-top: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .qr-placeholder {
+        font-weight: bold;
+        font-size: 18px;
+        letter-spacing: 2px;
+        margin-top: 4px;
+    }
+
+    .back-btn {
+        display: block;
+        width: 100%;
+        margin-top: 15px;
+        padding: 10px;
+        background-color: transparent;
+        color: #E2DFD2;
+        border: 1px solid #E2DFD2;
+        border-radius: 8px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+        .back-btn:hover {
+            background-color: rgba(226, 223, 210, 0.15);
+        }
+</style>
+
+<div class="loyalty-card">
+
+    <!-- المنطقة العلوية التي تضم العنوان والأكواب مع الخلفية الزيتية الفخمة -->
+    <div class="top-hero-section">
+        <div class="card-header">
+            <div class="brand-title">سَـــدَم</div>
+            <div style="font-size: 14px; color: #fff; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">بطاقة ولاء</div>
+        </div>
+
+        <div class="cups-container">
+            @for (int i = 1; i <= 5; i++)
+            {
+                bool isActive = i <= currentStampsInCycle;
+                <div class="cup-item @(isActive ? "active" : "")">
+                    <img src="~/images/cup-icon (1).png" alt="Cup" class="cup-img" />
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- معلومات العميل والمتبقي -->
+    <div class="info-section">
+        <div>
+            <div style="font-size: 12px; opacity: 0.7; letter-spacing: 1px;">HELLO</div>
+            <div class="customer-name">@Model.Name</div>
+        </div>
+        <div style="text-align: left;">
+            <div style="font-size: 12px; opacity: 0.9;">متبقي على هديتك</div>
+            <div style="font-weight: bold; font-size: 24px; color: #fff; text-align: center;">@remainingForGift</div>
+        </div>
+    </div>
+
+    <!-- تنبيه الأكواب المجانية إن وجدت -->
+    <!-- تظهر العبارة فقط إذا كان لديه كوب مجاني أو أكثر -->
+    @if (Model.FreeCupsCount > 0)
+    {
+        <div style="background-color: #2b382d; padding: 12px 20px; border-radius: 10px; margin: 15px 0; text-align: center; border: 1px solid rgba(226, 223, 210, 0.2);">
+            <span style="color: #E2DFD2; font-size: 18px; font-weight: bold;">
+                كوب مجاني : @Model.FreeCupsCount
+            </span>
+        </div>
+    }
+
+    <!-- المربع الأبيض الحاضن للباركود والـ ID -->
+    <div style="background-color: white; padding: 20px; border-radius: 12px; display: inline-block; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+        <!-- صورة الباركود -->
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Customer_@Model.Id" alt="Customer Barcode" style="display: block; margin: 0 auto 10px auto;" />
+
+        <!-- الـ ID تحته مباشرة -->
+        <span style="color: #333; font-weight: bold; font-size: 16px;">ID : @Model.Id</span>
+
+    </div>
+
+  
+
+</div>
